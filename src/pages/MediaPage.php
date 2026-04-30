@@ -399,7 +399,8 @@ class MediaPage extends \Page
                     } elseif (!in_array($urlParts['scheme'], [
                         'http',
                         'https',
-                    ])) {
+                    ],
+                    true)) {
                         // we only allow http(s) urls
                         $this->ExternalLink = '';
                     }
@@ -410,7 +411,7 @@ class MediaPage extends \Page
             }
 
             $file_headers = @get_headers($this->ExternalLink);
-            if ($file_headers === [] || $file_headers === false || strripos((string) $file_headers[0], '404 Not Found')) {
+            if ($file_headers === [] || $file_headers === false || strripos($file_headers[0], '404 Not Found')) {
                 $this->ExternalLink = null;
             }
         }

@@ -5,16 +5,16 @@ namespace nglasl\mediawesome;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\ReadonlyField;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\Security\Permission;
 
 /**
  *	This allows permission configuration for customisation of media.
  *	@author Nathan Glasl <nathan@symbiote.com.au>
  * @property ?string $MediaPermission
- * @extends \SilverStripe\ORM\DataExtension<(\SilverStripe\SiteConfig\SiteConfig & static)>
+ * @extends \SilverStripe\Core\Extension<(\SilverStripe\SiteConfig\SiteConfig & static)>
  */
-class SiteConfigMediaPermissionExtension extends DataExtension
+class SiteConfigMediaPermissionExtension extends Extension
 {
     /**
      *	Append an additional media permission field to the site configuration.
@@ -27,8 +27,6 @@ class SiteConfigMediaPermissionExtension extends DataExtension
     /**
      *	Allow permission configuration for customisation of media.
      */
-
-    #[\Override]
     public function updateCMSFields(FieldList $fields)
     {
 

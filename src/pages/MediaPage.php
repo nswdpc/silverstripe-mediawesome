@@ -342,7 +342,7 @@ class MediaPage extends \Page
      */
 
     #[\Override]
-    public function validate()
+    public function validate(): \SilverStripe\Core\Validation\ValidationResult
     {
 
         $parent = $this->getParent();

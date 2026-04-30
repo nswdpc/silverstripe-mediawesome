@@ -118,7 +118,7 @@ class MediaAttribute extends DataObject
      */
 
     #[\Override]
-    public function validate()
+    public function validate(): \SilverStripe\Core\Validation\ValidationResult
     {
 
         $result = parent::validate();

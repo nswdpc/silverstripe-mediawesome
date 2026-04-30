@@ -396,11 +396,14 @@ class MediaPage extends \Page
                     if (empty($urlParts['scheme'])) {
                         // no scheme, assume http
                         $this->ExternalLink = 'http://' . $this->ExternalLink;
-                    } elseif (!in_array($urlParts['scheme'], [
-                        'http',
-                        'https',
-                    ],
-                    true)) {
+                    } elseif (!in_array(
+                        $urlParts['scheme'],
+                        [
+                            'http',
+                            'https',
+                        ],
+                        true
+                    )) {
                         // we only allow http(s) urls
                         $this->ExternalLink = '';
                     }

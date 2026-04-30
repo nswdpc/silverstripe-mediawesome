@@ -93,9 +93,9 @@ class MediaPage extends \Page
 
     private static string $default_parent = MediaHolder::class;
 
-    private static string $description = 'Blog, Event, News, Publication <strong>or Custom Media</strong>';
+    private static string $class_description = 'Blog, Event, News, Publication <strong>or Custom Media</strong>';
 
-    private static string $icon = 'nglasl/silverstripe-mediawesome: client/images/page.png';
+    private static string $cms_icon = 'nglasl/silverstripe-mediawesome: client/images/page.png';
 
     /**
      *  The default media types and their respective attributes.

@@ -33,7 +33,7 @@ class MediaHolderController extends \PageController
      *	Determine the template for this media holder.
      */
 
-    public function index()
+    public function index(): \SilverStripe\ORM\FieldType\DBHTMLText
     {
 
         // Use a custom media type holder template if one exists.

@@ -35,9 +35,9 @@ class MediaHolder extends \Page
 
     private static string $default_child = MediaPage::class;
 
-    private static string $description = '<strong>Holds:</strong> Blogs, Events, News, Publications <strong>or Custom Media</strong>';
+    private static string $class_description = '<strong>Holds:</strong> Blogs, Events, News, Publications <strong>or Custom Media</strong>';
 
-    private static string $icon = 'nglasl/silverstripe-mediawesome: client/images/holder.png';
+    private static string $cms_icon = 'nglasl/silverstripe-mediawesome: client/images/holder.png';
 
     #[\Override]
     public function getCMSFields()

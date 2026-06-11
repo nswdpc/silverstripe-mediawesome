@@ -10,8 +10,12 @@ use SilverStripe\Versioned\Versioned;
 /**
  *	This is a CMS attribute for a media type.
  *	@author Nathan Glasl <nathan@symbiote.com.au>
+ * @property string $Title
+ * @property ?string $OriginalTitle
+ * @property int $MediaTypeID
+ * @method \nglasl\mediawesome\MediaType MediaType()
+ * @method \SilverStripe\ORM\ManyManyList<\nglasl\mediawesome\MediaPage> MediaPages()
  */
-
 class MediaAttribute extends DataObject
 {
     private static string $table_name = 'MediaAttribute';
@@ -29,33 +33,37 @@ class MediaAttribute extends DataObject
         'MediaPages' => MediaPage::class . '.MediaAttributes'
     ];
 
+    #[\Override]
     public function canView($member = null)
     {
 
         return true;
     }
 
+    #[\Override]
     public function canEdit($member = null)
     {
 
         return $this->checkPermissions($member);
     }
 
+    #[\Override]
     public function canCreate($member = null, $context = [])
     {
 
         return $this->checkPermissions($member);
     }
 
+    #[\Override]
     public function canDelete($member = null)
     {
 
         // Determine whether this is being used.
 
         $current = Versioned::get_stage();
-        foreach(singleton(Versioned::class)->getVersionedStages() as $stage) {
+        foreach (singleton(Versioned::class)->getVersionedStages() as $stage) {
             Versioned::set_stage($stage);
-            if($this->MediaPages()->exists() && $this->MediaPages()->where('MediaPageAttribute.Content IS NOT NULL')->exists()) {
+            if ($this->MediaPages()->exists() && $this->MediaPages()->where('MediaPageAttribute.Content IS NOT NULL')->exists()) {
                 return false;
             }
         }
@@ -64,9 +72,14 @@ class MediaAttribute extends DataObject
 
         // Determine whether this is user created.
 
-        $config = MediaPage::config();
-        $type = $this->MediaType()->Title;
-        return !isset($config->type_defaults[$type]) || !in_array($this->OriginalTitle, $config->type_defaults[$type]);
+        $typeDefaults = MediaPage::config()->get('type_defaults');
+        $mediaType = $this->MediaType();
+        $title = $mediaType && $mediaType->isInDB() ? trim($mediaType->Title ?? '') : '';
+        if ($title !== '') {
+            return !isset($typeDefaults[$title]) || !in_array($this->OriginalTitle, $typeDefaults[$title]);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -85,6 +98,7 @@ class MediaAttribute extends DataObject
         return Permission::check($configuration->MediaPermission, 'any', $member);
     }
 
+    #[\Override]
     public function getCMSFields()
     {
 
@@ -103,6 +117,7 @@ class MediaAttribute extends DataObject
      *	Confirm that the current attribute is valid.
      */
 
+    #[\Override]
     public function validate()
     {
 
@@ -110,7 +125,7 @@ class MediaAttribute extends DataObject
 
         // Confirm that the current attribute has been given a title.
 
-        if($result->isValid() && !$this->Title) {
+        if ($result->isValid() && !$this->Title) {
             $result->addError('"Title" required!');
         }
 
@@ -120,6 +135,7 @@ class MediaAttribute extends DataObject
         return $result;
     }
 
+    #[\Override]
     public function onBeforeWrite()
     {
 
@@ -127,11 +143,12 @@ class MediaAttribute extends DataObject
 
         // Set the original title of the current attribute for use in templates.
 
-        if(!$this->OriginalTitle) {
+        if (!$this->OriginalTitle) {
             $this->OriginalTitle = $this->Title;
         }
     }
 
+    #[\Override]
     public function onAfterWrite()
     {
 
@@ -139,11 +156,12 @@ class MediaAttribute extends DataObject
 
         // This needs to appear on media pages of the respective type.
 
-        foreach(MediaPage::get()->filter('MediaTypeID', $this->MediaTypeID) as $page) {
+        foreach (MediaPage::get()->filter('MediaTypeID', $this->MediaTypeID) as $page) {
             $page->MediaAttributes()->add($this);
         }
     }
 
+    #[\Override]
     public function onAfterDelete()
     {
 
@@ -152,7 +170,7 @@ class MediaAttribute extends DataObject
         // Clean up the pages associated with this.
 
         $current = Versioned::get_stage();
-        foreach(singleton(Versioned::class)->getVersionedStages() as $stage) {
+        foreach (singleton(Versioned::class)->getVersionedStages() as $stage) {
             Versioned::set_stage($stage);
             MediaPageAttribute::get()->filter('MediaAttributeID', $this->ID)->removeAll();
         }
@@ -166,7 +184,7 @@ class MediaAttribute extends DataObject
     public function getTemplateClass(): string
     {
 
-        return strtolower($this->OriginalTitle);
+        return strtolower((string) $this->OriginalTitle);
     }
 
 }

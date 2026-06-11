@@ -4,8 +4,8 @@ namespace nglasl\mediawesome;
 
 /**
  *  @author Nathan Glasl <nathan@symbiote.com.au>
+ * @extends \PageController<\nglasl\mediawesome\MediaPage>
  */
-
 class MediaPageController extends \PageController
 {
     /**
@@ -25,7 +25,7 @@ class MediaPageController extends \PageController
         // Use a custom media type page template if one exists.
         $type = $page->MediaType();
         $templates = [];
-        if($type->exists()) {
+        if ($type->exists()) {
             $templates[] = 'MediaPage_' . str_replace(' ', '', $type->Title);
         }
 

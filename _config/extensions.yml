@@ -7,3 +7,6 @@ nglasl\mediawesome\MediaPageAttribute:
 SilverStripe\SiteConfig\SiteConfig:
   extensions:
     - 'nglasl\mediawesome\SiteConfigMediaPermissionExtension'
+nglasl\mediawesome\MediaPage:
+  extensions:
+    - 'nglasl\mediawesome\MediaPageLinkExtension'

@@ -3,9 +3,9 @@
 namespace nglasl\mediawesome;
 
 use SilverStripe\CMS\Controllers\ModelAsController;
+use SilverStripe\CMS\Controllers\OldPageRedirector;
 use SilverStripe\Control\HTTP;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Convert;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\FieldList;
@@ -18,8 +18,8 @@ use SilverStripe\ORM\PaginatedList;
 
 /**
  *	@author Nathan Glasl <nathan@symbiote.com.au>
+ * @extends \PageController<\nglasl\mediawesome\MediaHolder>
  */
-
 class MediaHolderController extends \PageController
 {
     private static array $allowed_actions = [
@@ -41,7 +41,7 @@ class MediaHolderController extends \PageController
         $page = $this->data();
         $type = $page->MediaType();
         $templates = [];
-        if($type->exists()) {
+        if ($type->exists()) {
             $templates[] = 'MediaHolder_' . str_replace(' ', '', $type->Title);
         }
 
@@ -68,15 +68,16 @@ class MediaHolderController extends \PageController
         // Retrieve custom request filters.
 
         $request = $this->getRequest();
-        if($limitVar = $request->getVar('limit')) {
+        $limitVar = (int)$request->getVar('limit');
+        if ($limitVar > 0) {
             $limit = ($limitVar > 100) ? 100 : $limitVar;
         }
 
-        if($sortVar = $request->getVar('sort')) {
+        if ($sortVar = $request->getVar('sort')) {
             $sort = $sortVar;
         }
 
-        if($orderVar = $request->getVar('order')) {
+        if ($orderVar = $request->getVar('order')) {
             $order = $orderVar;
         }
 
@@ -90,11 +91,11 @@ class MediaHolderController extends \PageController
 
         // Validate the date request filter.
 
-        if($from) {
+        if ($from) {
             $valid = true;
             $date = [];
-            foreach(explode('-', (string) $from) as $segment) {
-                if(!is_numeric($segment)) {
+            foreach (explode('-', (string) $from) as $segment) {
+                if (!is_numeric($segment)) {
                     $valid = false;
                     break;
                 } else {
@@ -102,11 +103,11 @@ class MediaHolderController extends \PageController
                 }
             }
 
-            if($valid) {
+            if ($valid) {
 
                 // This is used to determine the direction to filter, so it makes sense from a user's perspective.
 
-                if($order === 'DESC') {
+                if ($order === 'DESC') {
                     $date[count($date) - 1]++;
                     $direction = '<';
                 } else {
@@ -135,8 +136,8 @@ class MediaHolderController extends \PageController
 
         // Merge both category and tag result sets.
 
-        if($category && $tag) {
-            $intersection = array_uintersect($categoryChildren->toArray(), $tagChildren->toArray(), fn ($first, $second): int|float => $first->ID - $second->ID);
+        if ($category && $tag) {
+            $intersection = array_uintersect($categoryChildren->toArray(), $tagChildren->toArray(), fn ($first, $second): int => $first->ID - $second->ID);
             $children = ArrayList::create($intersection);
         }
 
@@ -187,26 +188,26 @@ class MediaHolderController extends \PageController
 
         // Determine whether a controller action resolves.
 
-        if($this->hasAction($URL) && $this->checkAccessAction($URL)) {
+        if ($this->hasAction($URL) && $this->checkAccessAction($URL)) {
             $output = $this->$URL($request);
 
             // The current request URL has been successfully parsed.
 
-            while(!$request->allParsed()) {
+            while (!$request->allParsed()) {
                 $request->shift();
             }
 
             return $output;
-        } elseif(!is_numeric($URL)) {
+        } elseif (!is_numeric($URL)) {
 
             // Determine whether a media page child once existed, and redirect appropriately.
 
             $response = $this->resolveURL();
-            if($response instanceof \SilverStripe\Control\HTTPResponse) {
+            if ($response instanceof \SilverStripe\Control\HTTPResponse) {
 
                 // The current request URL has been successfully parsed.
 
-                while(!$request->allParsed()) {
+                while (!$request->allParsed()) {
                     $request->shift();
                 }
 
@@ -225,7 +226,7 @@ class MediaHolderController extends \PageController
             $URL
         ];
         $remaining = $request->remaining();
-        if($remaining) {
+        if ($remaining) {
             $remaining = explode('/', $remaining);
 
             // Determine the media page child to display.
@@ -236,16 +237,16 @@ class MediaHolderController extends \PageController
             // Iterate the formatted URL segments.
 
             $iteration = 1;
-            foreach($remaining as $segment) {
+            foreach ($remaining as $segment) {
                 $request->shift();
-                if($child) {
+                if ($child) {
 
                     // Determine whether a controller action has been defined.
 
                     $action = $segment;
                     break;
-                } elseif(!is_numeric($segment)) {
-                    if($iteration === 4) {
+                } elseif (!is_numeric($segment)) {
+                    if ($iteration === 4) {
 
                         // The remaining URL doesn't match the month/day/media format.
 
@@ -259,7 +260,7 @@ class MediaHolderController extends \PageController
                         'URLSegment' => $segment
                     ]);
                     $date = [];
-                    foreach($segments as $previous) {
+                    foreach ($segments as $previous) {
                         $date[] = str_pad($previous, 2, '0', STR_PAD_LEFT);
                     }
 
@@ -271,13 +272,13 @@ class MediaHolderController extends \PageController
 
                     // Determine whether a media page child once existed, and redirect appropriately.
 
-                    if(is_null($child)) {
+                    if (is_null($child)) {
                         $response = $this->resolveURL();
-                        if($response instanceof \SilverStripe\Control\HTTPResponse) {
+                        if ($response instanceof \SilverStripe\Control\HTTPResponse) {
 
                             // The current request URL has been successfully parsed.
 
-                            while(!$request->allParsed()) {
+                            while (!$request->allParsed()) {
                                 $request->shift();
                             }
 
@@ -297,19 +298,19 @@ class MediaHolderController extends \PageController
 
             // Retrieve the media page child controller, and determine whether an action resolves.
 
-            if($child) {
+            if ($child) {
                 $controller = ModelAsController::controller_for($child);
 
                 // Determine whether a controller action resolves.
 
-                if(is_null($action)) {
+                if (is_null($action)) {
                     return $controller;
-                } elseif($controller->hasAction($action) && $controller->checkAccessAction($action)) {
+                } elseif ($controller->hasAction($action) && $controller->checkAccessAction($action)) {
                     $output = $controller->$action($request);
 
                     // The current request URL has been successfully parsed.
 
-                    while(!$request->allParsed()) {
+                    while (!$request->allParsed()) {
                         $request->shift();
                     }
 
@@ -332,7 +333,7 @@ class MediaHolderController extends \PageController
 
         // The new request URL doesn't require parsing.
 
-        while(!$newRequest->allParsed()) {
+        while (!$newRequest->allParsed()) {
             $newRequest->shift();
         }
 
@@ -357,7 +358,7 @@ class MediaHolderController extends \PageController
 
         // Determine whether a media page child once existed.
 
-        $resolution = self::find_old_page([
+        $resolution = OldPageRedirector::find_old_page([
             $holder,
             $page
         ]);
@@ -365,7 +366,7 @@ class MediaHolderController extends \PageController
 
         // Make sure the current request URL doesn't match the resolution.
 
-        if($resolution && ($page !== substr($comparison, strrpos($comparison, '/') + 1))) {
+        if ($resolution && ($page !== substr($comparison, strrpos($comparison, '/') + 1))) {
 
             // Retrieve the current request parameters.
 
@@ -427,7 +428,7 @@ class MediaHolderController extends \PageController
         // Remove validation if clear has been triggered.
 
         $request = $this->getRequest();
-        if($request->getVar('action_clearFilters')) {
+        if ($request->getVar('action_clearFilters')) {
             $form->unsetValidator();
         }
 
@@ -454,7 +455,7 @@ class MediaHolderController extends \PageController
         $from = $request->getVar('from');
         $link = $this->Link();
         $separator = '?';
-        if($from) {
+        if ($from) {
 
             // Determine the formatted URL to represent the request filter.
 
@@ -466,12 +467,12 @@ class MediaHolderController extends \PageController
 
         $category = $request->getVar('category');
         $tag = $request->getVar('tag');
-        if($category) {
+        if ($category) {
             $link = HTTP::setGetVar('category', $category, $link, $separator);
             $separator = '&';
         }
 
-        if($tag) {
+        if ($tag) {
             $link = HTTP::setGetVar('tag', $tag, $link, $separator);
         }
 

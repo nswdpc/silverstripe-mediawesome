@@ -1,20 +1,18 @@
-# [mediawesome](https://packagist.org/packages/nglasl/silverstripe-mediawesome)
+## About
 
-_The current release is **4.0.6**_
-
-> This module allows creation of dynamic media holders/pages with CMS customisable types and attributes (blogs, events, news, publications), including versioning.
+This module allows creation of dynamic media holders/pages with CMS customisable types and attributes (blogs, events, news, publications), including versioning.
 
 ## Requirement
 
-* SilverStripe 3.1 → **4.0**
+* Silverstripe 5+
 
 ## Getting Started
 
-* [Place the module under your root project directory.](https://packagist.org/packages/nglasl/silverstripe-mediawesome)
-* `/dev/build`
-* Create a media holder.
-* Configure the media type.
-* Create media pages.
+Add this repo as an https vcs repository entry.
+
+```sh
+composer require nglasl/silverstripe-mediawesome
+```
 
 ## Overview
 
@@ -49,7 +47,7 @@ nglasl\mediawesome\MediaPage:
 
 These may also be added through the CMS, depending on the current user permissions.
 
-![types](https://raw.githubusercontent.com/nglasl/silverstripe-mediawesome/master/client/images/mediawesome-types.png)
+![types](./docs/images/mediawesome-types.png)
 
 * Select a media holder.
 * Select `Manage ALL Media`
@@ -59,7 +57,7 @@ These may also be added through the CMS, depending on the current user permissio
 
 These may be customised through the CMS, depending on the current user permissions.
 
-![attributes](https://raw.githubusercontent.com/nglasl/silverstripe-mediawesome/master/client/images/mediawesome-attributes.png)
+![attributes](./docs/images/mediawesome-attributes.png)
 
 * Select a media holder.
 * Select `Manage ALL Media`
@@ -68,11 +66,11 @@ These may be customised through the CMS, depending on the current user permissio
 
 These attributes will appear on media pages of the respective type, and are versioned.
 
-![versioning](https://raw.githubusercontent.com/nglasl/silverstripe-mediawesome/master/client/images/mediawesome-attribute-versioning.png)
+![versioning](./docs/images/mediawesome-attribute-versioning.png)
 
 ### Media Categories and Tags
 
-![categories-and-tags](https://raw.githubusercontent.com/nglasl/silverstripe-mediawesome/master/client/images/mediawesome-categories-and-tags.png)
+![categories-and-tags](./docs/images/mediawesome-categories-and-tags.png)
 
 * Select a media holder.
 * Select `Manage ALL Media`
@@ -93,13 +91,13 @@ A media holder request may have optional date, category and tag filters, which a
 
 The following on the media holder template allows a user to select a date, and then see media pages for and prior to that date:
 
-```php
-$DateFilterForm
+```html
+{$DateFilterForm}
 ```
 
 It is also possible to represent the date in a `year/month/day/media` URL format.
 
-![URL-formatting](https://raw.githubusercontent.com/nglasl/silverstripe-mediawesome/master/client/images/mediawesome-URL-formatting.png)
+![URL-formatting](./docs/images/mediawesome-URL-formatting.png)
 
 ### Smart Templating
 
@@ -109,8 +107,8 @@ Custom media type templates may be defined for your media holder/page:
 
 Retrieve a specific media page attribute in templates:
 
-```php
-$Attribute('Author')
+```html
+{$Attribute('Author')}
 ```
 
 To see examples, look at the default templates:
@@ -119,4 +117,4 @@ To see examples, look at the default templates:
 
 ## Maintainer Contact
 
-	Nathan Glasl, nathan@symbiote.com.au
+Nathan Glasl, nathan@symbiote.com.au

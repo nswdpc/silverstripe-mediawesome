@@ -12,8 +12,10 @@ use SilverStripe\ORM\DataList;
 /**
  *	Displays media holder/page children, with optional date/tag filters.
  *	@author Nathan Glasl <nathan@symbiote.com.au>
+ * @property ?string $URLFormatting
+ * @property int $MediaTypeID
+ * @method \nglasl\mediawesome\MediaType MediaType()
  */
-
 class MediaHolder extends \Page
 {
     private static string $table_name = 'MediaHolder';
@@ -37,6 +39,7 @@ class MediaHolder extends \Page
 
     private static string $icon = 'nglasl/silverstripe-mediawesome: client/images/holder.png';
 
+    #[\Override]
     public function getCMSFields()
     {
 
@@ -100,6 +103,7 @@ class MediaHolder extends \Page
         return $fields;
     }
 
+    #[\Override]
     public function onBeforeWrite()
     {
 
@@ -107,7 +111,7 @@ class MediaHolder extends \Page
 
         // Apply the first media type by default.
 
-        if(!$this->MediaTypeID) {
+        if (!$this->MediaTypeID) {
             $existing = MediaType::get()->first();
             $this->MediaTypeID = $existing->ID;
         }

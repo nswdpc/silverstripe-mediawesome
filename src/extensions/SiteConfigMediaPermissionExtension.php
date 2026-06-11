@@ -11,8 +11,9 @@ use SilverStripe\Security\Permission;
 /**
  *	This allows permission configuration for customisation of media.
  *	@author Nathan Glasl <nathan@symbiote.com.au>
+ * @property ?string $MediaPermission
+ * @extends \SilverStripe\ORM\DataExtension<(\SilverStripe\SiteConfig\SiteConfig & static)>
  */
-
 class SiteConfigMediaPermissionExtension extends DataExtension
 {
     /**
@@ -27,6 +28,7 @@ class SiteConfigMediaPermissionExtension extends DataExtension
      *	Allow permission configuration for customisation of media.
      */
 
+    #[\Override]
     public function updateCMSFields(FieldList $fields)
     {
 
@@ -37,7 +39,7 @@ class SiteConfigMediaPermissionExtension extends DataExtension
 
         // Confirm that the current CMS user has permission.
 
-        if(Permission::check('EDIT_SITECONFIG') === false) {
+        if (Permission::check('EDIT_SITECONFIG') === false) {
             $fields->addFieldToTab('Root.Access', $options = ReadonlyField::create(
                 'Media',
                 'Who can customise media?',

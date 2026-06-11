@@ -9,8 +9,13 @@ use SilverStripe\ORM\DataObject;
 /**
  *	This is essentially the versioned join between `MediaPage` and `MediaAttribute`, since each page will have different content for an attribute.
  *	@author Nathan Glasl <nathan@symbiote.com.au>
+ * @property ?string $Content
+ * @property int $MediaPageID
+ * @property int $MediaAttributeID
+ * @method \nglasl\mediawesome\MediaPage MediaPage()
+ * @method \nglasl\mediawesome\MediaAttribute MediaAttribute()
+ * @mixin \SilverStripe\Versioned\Versioned
  */
-
 class MediaPageAttribute extends DataObject
 {
     private static string $table_name = 'MediaPageAttribute';
@@ -29,18 +34,21 @@ class MediaPageAttribute extends DataObject
         'Content'
     ];
 
+    #[\Override]
     public function canDelete($member = null)
     {
 
         return false;
     }
 
+    #[\Override]
     public function getTitle()
     {
-
-        return $this->MediaAttribute()->Title;
+        $mediaAttribute = $this->MediaAttribute();
+        return $mediaAttribute && $mediaAttribute->isInDB() ? $mediaAttribute->Title : null;
     }
 
+    #[\Override]
     public function getCMSFields()
     {
 
@@ -50,7 +58,7 @@ class MediaPageAttribute extends DataObject
 
         // Determine the field type.
 
-        if(strrpos($this->getTitle(), 'Date')) {
+        if (strrpos($this->getTitle(), 'Date')) {
 
             // The user expects this to be a date attribute.
 

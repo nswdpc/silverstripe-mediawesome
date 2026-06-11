@@ -12,7 +12,7 @@ class MediaPageController extends \PageController
      *  Determine the template for this media page.
      */
 
-    public function index()
+    public function index(): \SilverStripe\Control\HTTPResponse|\SilverStripe\ORM\FieldType\DBHTMLText
     {
         // The following code was taken from RedirectorPageController::index()
         // on SilverStripe 4.1.1

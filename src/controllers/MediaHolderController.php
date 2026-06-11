@@ -12,9 +12,9 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HiddenField;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use SilverStripe\ORM\FieldType\DBDate;
-use SilverStripe\ORM\PaginatedList;
+use SilverStripe\Model\List\PaginatedList;
 
 /**
  *	@author Nathan Glasl <nathan@symbiote.com.au>
@@ -33,7 +33,7 @@ class MediaHolderController extends \PageController
      *	Determine the template for this media holder.
      */
 
-    public function index()
+    public function index(): \SilverStripe\ORM\FieldType\DBHTMLText
     {
 
         // Use a custom media type holder template if one exists.

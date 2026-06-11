@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace nglasl\mediawesome;
 
 use SilverStripe\ORM\DataObject;
@@ -52,7 +54,7 @@ class MediaTag extends DataObject
      */
 
     #[\Override]
-    public function validate()
+    public function validate(): \SilverStripe\Core\Validation\ValidationResult
     {
 
         $result = parent::validate();
